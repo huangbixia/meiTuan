@@ -42,7 +42,31 @@ export default {
     name: 'header-detail',
     mixins: [popupMixin],
     props: {
-        
+        seller: {
+          type: Object,
+          default () {
+            return {}
+          }
+        }
+    },
+    components: {
+      SupportIco,
+      Star
     }
 }
-</script>>
+</script>
+
+<style lang="stylus" scoped>
+  @import "~common/stylus/mixin"
+  @import "~common/stylus/variable"
+
+  .header-detail
+    position: fixed
+    z-index: 100
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    overflow: auto
+  
+</style>
