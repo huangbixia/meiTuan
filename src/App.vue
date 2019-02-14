@@ -1,12 +1,14 @@
 <template>
   <div id="app">
     <v-header :seller="seller"></v-header>
+    <header-detail></header-detail>
   </div>
 </template>
 
 <script>
 import VHeader from './components/v-header/v-header'
 import { getSeller } from 'api'
+import HeaderDetail from './components/header-detail/header-detail'
 
 export default {
   name: 'app',
@@ -16,7 +18,8 @@ export default {
     }
   },
   components: {
-    VHeader
+    VHeader,
+    HeaderDetail
   },
   methods: {
     _getSeller () {

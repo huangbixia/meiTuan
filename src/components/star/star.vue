@@ -20,7 +20,7 @@ export default {
         }
     },
     computed: {
-        startTtpe () {
+        starType () {
             return 'star-' + this.size
         },
         itemClasses () {
