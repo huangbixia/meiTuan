@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div class="header" @click="showDetail">
     <div class="content-wrapper">
       <div class="avatar">
         <img width="64" height="64" :src="seller.avatar">
@@ -46,7 +46,17 @@
       }
     },
     methods: {
-
+      showDetail () {
+        // cube-ui方法,创建组件,,在main.js中引入了全局组件
+        // 写法是cube-ui所规定,参考cube-ui的createAPI部分
+        this.headerDetailComp = this.headerDetailComp || this.$createHeaderDetail({
+          $props: {
+            seller: 'seller'
+          }
+        }) 
+        // 创建的是组件的实例，可直接引用组件的方法和变量
+        this.headerDetailComp.show();
+      }
     },
     components: {
       SupportIco

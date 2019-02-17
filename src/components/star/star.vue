@@ -1,6 +1,6 @@
 <template>
     <div class="star" :class="starType">
-        <span v-for="(itemClass, index) in itemClasses" :class="itemClass" class="start-item" :key="index"></span>
+        <span v-for="(itemClass, index) in itemClasses" :class="itemClass" class="star-item" :key="index"></span>
     </div>
 </template>
 
@@ -57,7 +57,7 @@ export default {
     .star-item
       background-repeat: no-repeat
     &.star-48
-      .star-48
+      .star-item
         width: 20px
         height: 20px
         margin-right: 22px
