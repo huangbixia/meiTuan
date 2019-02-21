@@ -88,7 +88,8 @@ export default {
         }
     },
     components: {
-        SupportIco
+        SupportIco,
+        ShopCart
     }
 }
 </script>
