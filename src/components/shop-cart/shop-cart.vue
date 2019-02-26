@@ -4,28 +4,57 @@
           <div class="content">
               <div class="content-left">
                   <div class="logo-wrapper">
-                      <div class="logo">
-                          <i class="icon-shopping_cart"></i>
+                      <div class="logo" :class="{'highlight':totalCount>0}">
+                          <i class="icon-shopping_cart" :class="{'highlight':totalCount>0}"></i>
                       </div>
-                      <div class="num"></div>
+                      <div class="num" v-show="totalCount>0">
+                          <bubble :num="totalCount"></bubble>
+                      </div>
                   </div>
-                  <div class="price">￥{{totalPrice}}</div>
+                  <div class="price" :class="{'highlight':totalCount>0}">￥{{totalPrice}}</div>
                   <div class="desc">另需配送费￥{{deliveryPrice}}元</div>
               </div>
               <div class="content-right">
-                  <div class="pay">
+                  <div class="pay" :class="payClass">
                       {{payDesc}}
                   </div>
               </div>
           </div>
+          <!-- 小球容器 -->
           <div class="ball-container">
-              
+              <div v-for="(ball, index) in balls" :key="index">
+                  <!-- 运动钩子 -->
+                  <transition
+                    @before-enter="beforeDrop"
+                    @enter="dropping"
+                    @after-enter="afterDrop"
+                  >
+                    <div class="ball" v-show="ball.show">
+                        <div class="inner inner-hook"></div>
+                    </div>
+                  </transition>
+              </div>
           </div>
       </div>
   </div>    
 </template>
 
 <script>
+import Bubble from 'components/bubble/bubble'
+
+const BALL_LEN = 10  // 小球默认数量
+
+// 创建小球
+function createBalls () {
+  let ret = []
+  for (let i = 0; i < BALL_LEN; i++) {
+      ret.push({
+          show: false // 默认不显示
+      })
+  }
+  return ret
+}
+
 export default {
     name: 'shop-cart',
     props: {
@@ -39,7 +68,7 @@ export default {
             type: Number,
             default: 0
         },
-        myPrice: {
+        minPrice: {
             type: Number,
             default: 0
         },    
@@ -54,7 +83,8 @@ export default {
     },
     data() {
         return {
-            listFold: this.fole
+            balls: createBalls(),
+            listFold: this.fold
         }
     },
     computed: {
@@ -63,6 +93,7 @@ export default {
           this.selectFoods.forEach((food) => {
               total += food.price * food.count
           });
+          return total
       },
       totalCount() {
           let count = 0
@@ -85,8 +116,41 @@ export default {
           if (!this.totalCount || this.totalPrice < this.minPrice) {
               return 'not-enough'
           } else {
-              'enough'
+              return 'enough'
           }
+      }
+    },
+    components: {
+        Bubble
+    },
+    created() {
+        this.dropBalls = []
+    },
+    methods: {
+      drop(el) {
+          // 接收小球的位置
+        for (let i = 0, len = this.balls.length; i < len; i++) {
+            const ball = this.balls[i]
+            if (!ball.show) {
+                ball.show = true
+                ball.el = el
+                // 保存正在下落的小球
+                this.dropBalls.push(ball)
+                return
+            }
+        }
+      },
+      beforeDrop(el) {
+          // 拿到最新的下落小球
+          const ball = this.dropBalls[this.dropBalls.length - 1]
+          // 保存触发小球新增的商品新增按钮的位置
+          const rect = ball.el.getBoundingClientRect()
+      },
+      dropping(el,done) {
+
+      },
+      afterDrop(el) {
+
       }
     }
 }
@@ -167,4 +231,17 @@ export default {
           &.enough
             background: $color-green
             color: $color-white
+    .ball-container
+      .ball
+        position: fixed
+        left: 32px
+        bottom: 22px
+        z-index: 200
+        transition: all 0.4s cubic-bezier(0.49, -0.29, 0.75, 0.41)
+        .inner
+          width: 16px
+          height: 16px
+          border-radius: 50%
+          background: $color-blue
+          transition: all 0.4s linear
 </style>

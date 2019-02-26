@@ -32,6 +32,10 @@
                   <span class="now">￥{{food.price}}</span>
                   <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
+                <div class="cart-control-wrapper">
+                  <!-- 监听add事件，实现点击增加，小球飞入的特效 -->
+                  <cart-control @add="onAdd" :food="food"></cart-control>
+                </div>
               </div>
             </li>
           </ul>
@@ -50,6 +54,7 @@
 
 <script>
 import { getGoods } from 'api'
+import CartControl from 'components/cart-control/cart-control'
 import ShopCart from 'components/shop-cart/shop-cart'
 import SupportIco from 'components/support-ico/support-ico'
 
@@ -86,6 +91,7 @@ export default {
             }
           })
         })
+        console.log(foods)
         return foods
       }
     },
@@ -99,11 +105,16 @@ export default {
                     this.goods = goods
                 })
             }
+        },
+        onAdd(el) {
+          // 调用shop-cart组件的drop方法
+          this.$refs.shopCart.drop(el)
         }
     },
     components: {
         SupportIco,
-        ShopCart
+        ShopCart,
+        CartControl
     }
 }
 </script>

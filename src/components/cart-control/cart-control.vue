@@ -11,6 +11,8 @@
 </template>
 
 <script>
+const EVENT_ADD = 'add'
+
 export default {
     name: "cart-control",
     props: {
@@ -19,13 +21,15 @@ export default {
         }
     },
     methods: {
-      add() {
+      add(event) {
           if (!this.food.count) {
               // 给this.food对象赋值一个属性，且要同步影响到模版的数据变化
               this.$set(this.food, 'count', 1)  // 增加count属性，赋值为1
           } else {
               this.food.count++
           }
+          // 拿到点击按钮
+          this.$emit(EVENT_ADD, event.target)
       },
       decrease() {
           if (this.food.count) {
@@ -35,3 +39,41 @@ export default {
     }
 }
 </script>
+
+<style lang="stylus" scoped>
+  @import "~common/stylus/variable"
+
+  .cartcontrol
+    display: flex
+    align-items: center
+    .cart-decrease
+      display: inline-block
+      padding: 6px
+      opacity: 1
+      .inner
+        display: inline-block
+        line-height: 24px
+        font-size: $fontsize-large-xxx
+        color: $color-blue
+        transition: all 0.4s linear
+        transform: rotate(0)
+      &.move-enter-active, &.move-leave-active
+        transition: all 0.4s linear
+      &.move-enter, &.move-leave-active
+        opacity: 0
+        transform: translate3d(24px, 0, 0)
+        .inner
+          transform: rotate(180deg)
+    .cart-count
+      width: 12px
+      line-height: 24px
+      text-align: center
+      font-size: $fontsize-small-s
+      color: $color-grey
+    .cart-add
+      display: inline-block
+      padding: 6px
+      line-height: 24px
+      font-size: $fontsize-large-xxx
+      color: $color-blue
+</style>
