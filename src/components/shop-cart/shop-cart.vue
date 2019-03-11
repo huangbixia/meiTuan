@@ -42,7 +42,8 @@
 <script>
 import Bubble from 'components/bubble/bubble'
 
-const BALL_LEN = 10  // 小球默认数量
+const BALL_LEN = 100  // 小球默认数量
+const innerClsHook = 'inner-hook'
 
 // 创建小球
 function createBalls () {
@@ -145,12 +146,29 @@ export default {
           const ball = this.dropBalls[this.dropBalls.length - 1]
           // 保存触发小球新增的商品新增按钮的位置
           const rect = ball.el.getBoundingClientRect()
+          const x = rect.left - 32
+          const y = -(window.innerHeight - rect.top -22)
+          el.style.display = ''
+          el.style.transform = el.style.webketTransform = `translate3d(0, ${y}px, 0)`
+          const inner = el.getElementsByClassName(innerClsHook)[0];
+          inner.style.transform = inner.style.webketTransform = `translate3d(${x}px, 0, 0)`
       },
       dropping(el,done) {
-
+          // 重绘
+          this._reflow = document.body.offsetHeight
+          el.style.transform = el.style.webketTransform = `translate3d(0, 0, 0)`
+          const inner = el.getElementsByClassName(innerClsHook)[0];
+          inner.style.transform = inner.style.webketTransform = `translate3d(0, 0, 0)`
+          // 监听动画事件
+          el.addEventListener('transitionend', done)
       },
       afterDrop(el) {
-
+          // 完成动画后，回收ball
+          const ball = this.dropBalls.shift()
+          if (ball) {
+              ball.show == false
+              el.style.display = 'none'
+          }
       }
     }
 }

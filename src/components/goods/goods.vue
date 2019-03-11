@@ -7,6 +7,14 @@
         :options="scrollOptions"
         v-if="goods.length"
       >         
+        <template slot="bar" slot-scope="props">
+          <cube-scroll-nav-bar
+            direction="vertical"
+            :labels="props.labels"
+            :txts="props.txts"
+            :current="props.current"
+          ></cube-scroll-nav-bar>
+        </template>
         <cube-scroll-nav-panel
           v-for="good in goods"
           :key="good.name"
@@ -93,6 +101,13 @@ export default {
         })
         console.log(foods)
         return foods
+      },
+      // 左侧导航栏标题
+      barTxts() {
+        let ret = []
+        this.goods.forEach((good)=>{
+          const {type, name, foods} = good
+        })
       }
     },
     methods: {
