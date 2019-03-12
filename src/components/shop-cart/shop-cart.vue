@@ -1,7 +1,7 @@
 <template>
   <div>
       <div class="shopcart">
-          <div class="content">
+          <div class="content" @click="toggleList">
               <div class="content-left">
                   <div class="logo-wrapper">
                       <div class="logo" :class="{'highlight':totalCount>0}">
@@ -126,6 +126,7 @@ export default {
     },
     created() {
         this.dropBalls = []
+        this.listFold = true // 购物车详情默认收起
     },
     methods: {
       drop(el) {
@@ -168,6 +169,16 @@ export default {
           if (ball) {
               ball.show == false
               el.style.display = 'none'
+          }
+      },
+      // 显示购物车详情的点击时间内
+      toggleList () {
+          if (this.listFold) {
+              if (!this.totalCount) {
+                  return
+              }
+              this.listFold = true
+              this._showShopCartList()
           }
       }
     }
