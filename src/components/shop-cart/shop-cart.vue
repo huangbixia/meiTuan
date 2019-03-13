@@ -171,15 +171,34 @@ export default {
               el.style.display = 'none'
           }
       },
-      // 显示购物车详情的点击时间内
+      // 显示购物车详情的点击事件
       toggleList () {
           if (this.listFold) {
               if (!this.totalCount) {
                   return
               }
-              this.listFold = true
+              this.listFold = false
               this._showShopCartList()
+          } else {
+              this.listFold = true
+              this._hideShopCartList()
           }
+      },
+      _showShopCartList() {
+          this.shopCarListComp = this.shopCarListComp || this.$createShopCartList({
+              $props: {
+                  selectFoods: 'selectFoods'
+              },
+              $events: {
+                  hide: () => {
+                      this.listFold = true
+                  }
+              }
+          })
+          this.shopCarListComp.show()
+      },
+      _hideShopCartList() {
+          this.shopCarListComp.hide()
       }
     }
 }
@@ -261,6 +280,7 @@ export default {
             background: $color-green
             color: $color-white
     .ball-container
+      z-index: 100
       .ball
         position: fixed
         left: 32px
