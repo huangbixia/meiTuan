@@ -179,9 +179,11 @@ export default {
               }
               this.listFold = false
               this._showShopCartList()
+              this._showShopCartSticky()
           } else {
               this.listFold = true
               this._hideShopCartList()
+              this._hideShopCartSticky()
           }
       },
       _showShopCartList() {
@@ -198,8 +200,25 @@ export default {
           this.shopCarListComp.show()
       },
       _hideShopCartList() {
-          this.shopCarListComp.hide()
-      }
+          // 判断是哪个层
+          const comp = this.sticky ? this.$parent.list : this.shopCarListComp
+          comp.hide && comp.hide()
+      },
+      _showShopCartSticky() {
+           this.shopCarStickyComp = this.shopCarStickyComp || this.$createShopCartSticky({
+               $props: {
+                   selectFoods: 'selectFoods',
+                   deliveryPrice: 'deliveryPrice',
+                   minPrice: 'minPrice',
+                   fold: 'listFold',
+                   list: this.shopCarListComp
+               }
+           })
+           this.shopCarStickyComp.show()
+       },
+       _hideShopCartSticky() {
+          this.shopCarStickyComp.hide()
+      },
     }
 }
 </script>
