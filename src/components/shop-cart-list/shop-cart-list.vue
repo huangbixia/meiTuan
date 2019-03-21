@@ -47,7 +47,6 @@
   const EVENT_SHOW = 'show'
   const EVENT_ADD = 'add'
   const EVENT_LEAVE = 'leave'
-  const EVENT_HIDE = 'hide'
 
   export default {
     name: 'shop-cart-list',
@@ -60,11 +59,6 @@
         }
       }
     },
-    data() {
-      return {
-        visible: false
-      }
-    },
     created() {
       this.$on(EVENT_SHOW, () => {
         this.$nextTick(() => {
@@ -73,13 +67,6 @@
       })
     },
     methods: {
-      show() {
-        this.visible = true
-      },
-      hide() {
-        this.visible = false
-        this.$emit(EVENT_HIDE)
-      },
       onAdd(target) {
         this.$emit(EVENT_ADD, target)
       },
@@ -112,8 +99,8 @@
 </script>
 
 <style lang="stylus" scoped>
-    @import "~common/stylus/variable"
-.cube-shop-cart-list
+  @import "~common/stylus/variable"
+  .cube-shop-cart-list
     bottom: 48px
     &.fade-enter, &.fade-leave-active
       opacity: 0
@@ -136,7 +123,8 @@
         float: right
         font-size: $fontsize-small
         color: $color-blue
-  .list-content
+
+    .list-content
       padding: 0 18px
       max-height: 217px
       overflow: hidden
@@ -161,4 +149,5 @@
           position: absolute
           right: 0
           bottom: 6px
+
 </style>
