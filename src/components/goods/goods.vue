@@ -139,7 +139,7 @@ export default {
     methods: {
         fetch() {
             if (!this.fetched) {
-                this.fetched = true
+                this.fetched = true  // 防止重复获取
                 getGoods({
                     id: this.seller.id
                 }).then((goods) => {
