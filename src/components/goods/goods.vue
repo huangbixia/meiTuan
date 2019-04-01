@@ -37,6 +37,7 @@
         >
           <ul>
             <li
+              @click="selectFood(food)"
               v-for="food in good.foods"
               :key="food.name"
               class="food-item"
@@ -71,6 +72,7 @@
           :delivery-price="seller.deliveryPrice"
           :min-price="seller.minPrice"></shop-cart>
     </div>
+    <food :food="selectedFood" ref="food"></food>>
   </div>
 </template>
 
@@ -80,6 +82,7 @@ import CartControl from 'components/cart-control/cart-control'
 import ShopCart from 'components/shop-cart/shop-cart'
 import SupportIco from 'components/support-ico/support-ico'
 import Bubble from 'components/bubble/bubble'
+import Food from 'components/food/food'
 
 export default {
     name: 'goods',
@@ -98,7 +101,8 @@ export default {
             scrollOptions: {
                 click: false,
                 directionLockThreshold: 0
-            }
+            },
+            selectedFood: {}
         }
     },
     computed: {
@@ -137,6 +141,11 @@ export default {
       }
     },
     methods: {
+        selectFood(food) {
+          this.selectedFood = food
+          console.log(food)
+          this.$refs.food.show()
+        },
         fetch() {
             if (!this.fetched) {
                 this.fetched = true  // 防止重复获取
@@ -156,7 +165,8 @@ export default {
         SupportIco,
         ShopCart,
         CartControl,
-        Bubble
+        Bubble,
+        Food
     }
 }
 </script>
