@@ -72,7 +72,6 @@
           :delivery-price="seller.deliveryPrice"
           :min-price="seller.minPrice"></shop-cart>
     </div>
-    <food :food="selectedFood" ref="food"></food>>
   </div>
 </template>
 
@@ -82,7 +81,6 @@ import CartControl from 'components/cart-control/cart-control'
 import ShopCart from 'components/shop-cart/shop-cart'
 import SupportIco from 'components/support-ico/support-ico'
 import Bubble from 'components/bubble/bubble'
-import Food from 'components/food/food'
 
 export default {
     name: 'goods',
@@ -143,8 +141,8 @@ export default {
     methods: {
         selectFood(food) {
           this.selectedFood = food
-          console.log(food)
-          this.$refs.food.show()
+          this._showFood()
+          this._showShopCartSticky();
         },
         fetch() {
             if (!this.fetched) {
@@ -159,14 +157,40 @@ export default {
         onAdd(el) {
           // 调用shop-cart组件的drop方法
           this.$refs.shopCart.drop(el)
+        },
+        _showFood() {
+          this.foodComp = this.foodComp || this.$createFood({
+            $props: {
+              food: 'selectedFood'
+            },
+            $events: {
+              leave: () => {
+                this._hideShopCartList();
+              }
+            }
+          })
+          this.foodComp.show()
+        },
+        _showShopCartSticky() {
+          this.shopCartStickyComp = this.shopCartStickyComp || this.$createShopCartSticky({
+            $props: {
+              selectFoods: "selectFoods",
+              deliveryPrice: this.seller.deliveryPrice,
+              minPrice: this.seller.minPrice,
+              fold: true
+            }
+          })
+          this.shopCartStickyComp.show()
+        },
+        _hideShopCartList() {
+           this.shopCartStickyComp.hide()
         }
     },
     components: {
         SupportIco,
         ShopCart,
         CartControl,
-        Bubble,
-        Food
+        Bubble
     }
 }
 </script>
