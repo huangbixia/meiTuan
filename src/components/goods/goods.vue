@@ -166,6 +166,9 @@ export default {
             $events: {
               leave: () => {
                 this._hideShopCartList();
+              },
+              add: (el) => {
+                this.shopCartStickyComp.drop(el)
               }
             }
           })
