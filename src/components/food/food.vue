@@ -44,7 +44,7 @@
                                 <span class="name">{{rating.username}}</span>
                                 <img :src="rating.avatar" class="avatar" width="12" height="12">
                               </div>
-                              <div class="time">{{rating.rateTime}}</div>
+                              <div class="time">{{ format(rating.rateTime) }}</div>
                               <p class="text">
                                 <span :class="{'icon-thumb_up': rating.rateType === 0, 'icon-thumb_down': rating.rateType === 1}"></span>{{rating.text}}
                               </p>
@@ -63,6 +63,7 @@
 import popupMixin from 'common/mixins/popup'
 import Split from 'components/split/split'
 import CartControl from 'components/cart-control/cart-control'
+import moment from 'moment'
 
 const EVENT_SHOW = 'show'
 const EVENT_LEAVE = 'leave'
@@ -91,6 +92,9 @@ export default {
         },
         addFood(target) {
             this.$emit(EVENT_ADD, target)
+        },
+        format(time) {
+          return moment(time).format('YYYY-MM-DD hh:mm');
         }
     },
     created() {
