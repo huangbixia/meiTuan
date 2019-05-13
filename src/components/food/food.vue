@@ -1,7 +1,7 @@
 <template>
     <transition name="move" @after-leave="afterLeave">
         <div class="food" v-show="visible">
-            <cube-scroll ref="scroll">
+            <cube-scroll ref="scroll" :data="computedRatings">
                 <div class="food-content">
                     <div class="image-header">
                         <img :src="food.image">
@@ -34,10 +34,18 @@
                     <split></split>
                     <div class="rating">
                       <h1 class="title">商品评价</h1>
+                      <rating-select
+                        :ratings="ratings"
+                        :onlyContent="onlyContent"
+                        :selectType="selectType"
+                        :desc="desc"
+                        @select="onSelect"
+                        @toggle="onToggle"
+                      ></rating-select>
                       <div class="rating-wrapper">
                         <ul v-show="ratings && ratings.length">
                           <li
-                            v-for="(rating, index) in ratings"
+                            v-for="(rating, index) in computedRatings"
                             class="rating-item border-bottom-1px"
                             :key="index">
                               <div class="user">
@@ -50,7 +58,7 @@
                               </p>
                           </li>
                         </ul>
-                        <div class="no-rating" v-show="!ratings || !ratings.length">暂无评价</div>
+                        <div class="no-rating" v-show="!computedRatings || !computedRatings.length">暂无评价</div>
                       </div>
                     </div>
                 </div>
@@ -61,8 +69,10 @@
 
 <script>
 import popupMixin from 'common/mixins/popup'
+import ratingMaxin from 'common/mixins/rating'
 import Split from 'components/split/split'
 import CartControl from 'components/cart-control/cart-control'
+import RatingSelect from 'components/rating-select/rating-select'
 import moment from 'moment'
 
 const EVENT_SHOW = 'show'
@@ -70,17 +80,26 @@ const EVENT_LEAVE = 'leave'
 const EVENT_ADD = 'add'
 
 export default {
-    mixins: [popupMixin],
+    mixins: [popupMixin, ratingMaxin],
     name: 'food',
     props: {
         food: {
             type: Object
         }
     },
+    data() {
+      return {
+        desc: {
+          all: '全部',
+          positive: '推荐',
+          negative: '吐槽'
+        }
+      }
+    },
     computed: {
       ratings() {
         return this.food.ratings
-      }
+      },
     },
     methods: {
         afterLeave() {
@@ -94,7 +113,7 @@ export default {
             this.$emit(EVENT_ADD, target)
         },
         format(time) {
-          return moment(time).format('YYYY-MM-DD hh:mm');
+          return moment(time).format('YYYY-MM-DD hh:mm')
         }
     },
     created() {
@@ -106,7 +125,8 @@ export default {
     },
     components: {
         Split,
-        CartControl
+        CartControl,
+        RatingSelect
     }
 }
 </script>
