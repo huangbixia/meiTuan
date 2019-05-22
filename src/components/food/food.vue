@@ -1,91 +1,96 @@
 <template>
-    <transition name="move" @after-leave="afterLeave">
-        <div class="food" v-show="visible">
-            <cube-scroll ref="scroll" :data="computedRatings">
-                <div class="food-content">
-                    <div class="image-header">
-                        <img :src="food.image">
-                        <div class="back" @click="hide">
-                            <i class="icon-arrow_lift"></i>
-                        </div>
-                    </div>
-                    <div class="content">
-                        <h1 class="title">{{food.name}}</h1>
-                        <div class="detail">
-                            <span class="sell-count">月售{{food.sellCount}}份</span>
-                            <span class="rating">好评率{{food.rating}}%</span>
-                        </div>
-                        <div class="price">
-                            <span class="now">￥{{food.price}}</span>
-                            <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
-                        </div>
-                        <div class="cart-control-wrapper">
-                            <cart-control @add="addFood" :food="food"></cart-control>
-                        </div>
-                        <transition name="fade">
-                            <div class="buy" @click.stop="addFirst" v-show="!food.count">加入购物车</div>
-                        </transition>
-                    </div>
-                    <split v-show="food.info"></split>
-                    <div class="info" v-show="food.info">
-                        <h1>商品信息</h1>
-                        <p class="text">{{food.info}}</p>
-                    </div>
-                    <split></split>
-                    <div class="rating">
-                      <h1 class="title">商品评价</h1>
-                      <rating-select
-                        :ratings="ratings"
-                        :onlyContent="onlyContent"
-                        :selectType="selectType"
-                        :desc="desc"
-                        @select="onSelect"
-                        @toggle="onToggle"
-                      ></rating-select>
-                      <div class="rating-wrapper">
-                        <ul v-show="ratings && ratings.length">
-                          <li
-                            v-for="(rating, index) in computedRatings"
-                            class="rating-item border-bottom-1px"
-                            :key="index">
-                              <div class="user">
-                                <span class="name">{{rating.username}}</span>
-                                <img :src="rating.avatar" class="avatar" width="12" height="12">
-                              </div>
-                              <div class="time">{{ format(rating.rateTime) }}</div>
-                              <p class="text">
-                                <span :class="{'icon-thumb_up': rating.rateType === 0, 'icon-thumb_down': rating.rateType === 1}"></span>{{rating.text}}
-                              </p>
-                          </li>
-                        </ul>
-                        <div class="no-rating" v-show="!computedRatings || !computedRatings.length">暂无评价</div>
-                      </div>
-                    </div>
-                </div>
-            </cube-scroll>
+  <transition
+    name="move"
+    @after-leave="afterLeave"
+  >
+    <div class="food" v-show="visible">
+      <cube-scroll ref="scroll">
+        <div class="food-content">
+          <div class="image-header">
+            <img :src="food.image">
+            <div class="back" @click="hide">
+              <i class="icon-arrow_lift"></i>
+            </div>
+          </div>
+          <div class="content">
+            <h1 class="title">{{food.name}}</h1>
+            <div class="detail">
+              <span class="sell-count">月售{{food.sellCount}}份</span>
+              <span class="rating">好评率{{food.rating}}%</span>
+            </div>
+            <div class="price">
+              <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
+            </div>
+            <div class="cart-control-wrapper">
+              <cart-control @add="addFood" :food="food"></cart-control>
+            </div>
+            <transition name="fade">
+              <div @click="addFirst" class="buy" v-show="!food.count">
+                加入购物车
+              </div>
+            </transition>
+          </div>
+          <split v-show="food.info"></split>
+          <div class="info" v-show="food.info">
+            <h1 class="title">商品信息</h1>
+            <p class="text">{{food.info}}</p>
+          </div>
+          <split></split>
+          <div class="rating">
+            <h1 class="title">商品评价</h1>
+            <rating-select
+              @select="onSelect"
+              @toggle="onToggle"
+              :selectType="selectType"
+              :onlyContent="onlyContent"
+              :desc="desc"
+              :ratings="ratings">
+            </rating-select>
+            <div class="rating-wrapper">
+              <ul v-show="computedRatings && computedRatings.length">
+                <li
+                  v-for="(rating,index) in computedRatings"
+                  class="rating-item border-bottom-1px"
+                  :key="index"
+                >
+                  <div class="user">
+                    <span class="name">{{rating.username}}</span>
+                    <img class="avatar" width="12" height="12" :src="rating.avatar">
+                  </div>
+                  <div class="time">{{format(rating.rateTime)}}</div>
+                  <p class="text">
+                    <span :class="{'icon-thumb_up':rating.rateType===0,'icon-thumb_down':rating.rateType===1}"></span>{{rating.text}}
+                  </p>
+                </li>
+              </ul>
+              <div class="no-rating" v-show="!computedRatings || !computedRatings.length">暂无评价</div>
+            </div>
+          </div>
         </div>
-    </transition>
+      </cube-scroll>
+    </div>
+  </transition>
 </template>
 
-<script>
-import popupMixin from 'common/mixins/popup'
-import ratingMaxin from 'common/mixins/rating'
-import Split from 'components/split/split'
-import CartControl from 'components/cart-control/cart-control'
-import RatingSelect from 'components/rating-select/rating-select'
-import moment from 'moment'
+<script type="text/ecmascript-6">
+  import moment from 'moment'
+  import CartControl from 'components/cart-control/cart-control'
+  import RatingSelect from 'components/rating-select/rating-select'
+  import Split from 'components/split/split'
+  import ratingMixin from 'common/mixins/rating'
+  import popupMixin from 'common/mixins/popup'
 
-const EVENT_SHOW = 'show'
-const EVENT_LEAVE = 'leave'
-const EVENT_ADD = 'add'
+  const EVENT_SHOW = 'show'
+  const EVENT_ADD = 'add'
+  const EVENT_LEAVE = 'leave'
 
-export default {
-    mixins: [popupMixin, ratingMaxin],
+  export default {
     name: 'food',
+    mixins: [ratingMixin, popupMixin],
     props: {
-        food: {
-            type: Object
-        }
+      food: {
+        type: Object
+      }
     },
     data() {
       return {
@@ -99,22 +104,7 @@ export default {
     computed: {
       ratings() {
         return this.food.ratings
-      },
-    },
-    methods: {
-        afterLeave() {
-            this.$emit(EVENT_LEAVE)
-        },
-        addFirst(event) {
-            this.$set(this.food, 'count', 1)
-            this.$emit(EVENT_ADD, event.target)
-        },
-        addFood(target) {
-            this.$emit(EVENT_ADD, target)
-        },
-        format(time) {
-          return moment(time).format('YYYY-MM-DD hh:mm')
-        }
+      }
     },
     created() {
       this.$on(EVENT_SHOW, () => {
@@ -123,12 +113,27 @@ export default {
         })
       })
     },
+    methods: {
+      afterLeave() {
+        this.$emit(EVENT_LEAVE)
+      },
+      addFirst(event) {
+        this.$set(this.food, 'count', 1)
+        this.$emit(EVENT_ADD, event.target)
+      },
+      addFood(target) {
+        this.$emit(EVENT_ADD, target)
+      },
+      format(time) {
+        return moment(time).format('YYYY-MM-DD hh:mm')
+      }
+    },
     components: {
-        Split,
-        CartControl,
-        RatingSelect
+      CartControl,
+      RatingSelect,
+      Split
     }
-}
+  }
 </script>
 
 <style lang="stylus" scoped>
@@ -167,6 +172,7 @@ export default {
           padding: 10px
           font-size: $fontsize-large-xx
           color: $color-white
+
     .content
       position: relative
       padding: 18px

@@ -6,7 +6,7 @@
         :data="goods"
         :options="scrollOptions"
         v-if="goods.length"
-      >         
+      >
         <template slot="bar" slot-scope="props">
           <cube-scroll-nav-bar
             direction="vertical"
@@ -16,15 +16,15 @@
           >
             <template slot-scope="props">
               <div class="text">
-                <support-ico 
-                  v-if="props.txt.type >= 1"
+                <support-ico
+                  v-if="props.txt.type>=1"
                   :size=3
                   :type="props.txt.type"
-                  ></support-ico>
-                  <span>{{props.txt.name}}</span>
-                  <span class="num" v-if="props.txt.count">
-                    <bubble :num="props.txt.count"></bubble>
-                  </span>
+                ></support-ico>
+                <span>{{props.txt.name}}</span>
+                <span class="num" v-if="props.txt.count">
+                  <bubble :num="props.txt.count"></bubble>
+                </span>
               </div>
             </template>
           </cube-scroll-nav-bar>
@@ -56,7 +56,6 @@
                   <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
                 <div class="cart-control-wrapper">
-                  <!-- 监听add事件，实现点击增加，小球飞入的特效 -->
                   <cart-control @add="onAdd" :food="food"></cart-control>
                 </div>
               </div>
@@ -66,49 +65,49 @@
       </cube-scroll-nav>
     </div>
     <div class="shop-cart-wrapper">
-        <shop-cart
-          ref="shopCart" 
-          :select-foods="selectFoods"
-          :delivery-price="seller.deliveryPrice"
-          :min-price="seller.minPrice"></shop-cart>
+      <shop-cart
+        ref="shopCart"
+        :select-foods="selectFoods"
+        :delivery-price="seller.deliveryPrice"
+        :min-price="seller.minPrice"></shop-cart>
     </div>
   </div>
 </template>
 
 <script>
-import { getGoods } from 'api'
-import CartControl from 'components/cart-control/cart-control'
-import ShopCart from 'components/shop-cart/shop-cart'
-import SupportIco from 'components/support-ico/support-ico'
-import Bubble from 'components/bubble/bubble'
+  import { getGoods } from 'api'
+  import CartControl from 'components/cart-control/cart-control'
+  import ShopCart from 'components/shop-cart/shop-cart'
+  import Food from 'components/food/food'
+  import SupportIco from 'components/support-ico/support-ico'
+  import Bubble from 'components/bubble/bubble'
 
-export default {
+  export default {
     name: 'goods',
     props: {
-        data: {
-            type: Object,
-            default() {
-                return {}
-            }
+      data: {
+        type: Object,
+        default() {
+          return {}
         }
+      }
     },
     data() {
-        return {
-            goods: [],
-            selectedFoods: {},
-            scrollOptions: {
-                click: false,
-                directionLockThreshold: 0
-            },
-            selectedFood: {}
+      return {
+        goods: [],
+        selectedFood: {},
+        scrollOptions: {
+          click: false,
+          directionLockThreshold: 0
         }
+      }
     },
     computed: {
       seller() {
-          return this.data.seller
+        return this.data.seller
       },
       selectFoods() {
-        let foods = [];
+        let foods = []
         this.goods.forEach((good) => {
           good.foods.forEach((food) => {
             if (food.count) {
@@ -116,16 +115,13 @@ export default {
             }
           })
         })
-        console.log(foods)
         return foods
       },
-      // 左侧导航栏标题
       barTxts() {
         let ret = []
-        this.goods.forEach((good)=>{
+        this.goods.forEach((good) => {
           const {type, name, foods} = good
           let count = 0
-          // 计算有多少物品
           foods.forEach((food) => {
             count += food.count || 0
           })
@@ -139,63 +135,63 @@ export default {
       }
     },
     methods: {
-        selectFood(food) {
-          this.selectedFood = food
-          this._showFood()
-          this._showShopCartSticky();
-        },
-        fetch() {
-            if (!this.fetched) {
-                this.fetched = true  // 防止重复获取
-                getGoods({
-                    id: this.seller.id
-                }).then((goods) => {
-                    this.goods = goods
-                })
-            }
-        },
-        onAdd(el) {
-          // 调用shop-cart组件的drop方法
-          this.$refs.shopCart.drop(el)
-        },
-        _showFood() {
-          this.foodComp = this.foodComp || this.$createFood({
-            $props: {
-              food: 'selectedFood'
-            },
-            $events: {
-              leave: () => {
-                this._hideShopCartList();
-              },
-              add: (el) => {
-                this.shopCartStickyComp.drop(el)
-              }
-            }
+      fetch() {
+        if (!this.fetched) {
+          this.fetched = true
+          getGoods({
+            id: this.seller.id
+          }).then((goods) => {
+            this.goods = goods
           })
-          this.foodComp.show()
-        },
-        _showShopCartSticky() {
-          this.shopCartStickyComp = this.shopCartStickyComp || this.$createShopCartSticky({
-            $props: {
-              selectFoods: "selectFoods",
-              deliveryPrice: this.seller.deliveryPrice,
-              minPrice: this.seller.minPrice,
-              fold: true
-            }
-          })
-          this.shopCartStickyComp.show()
-        },
-        _hideShopCartList() {
-           this.shopCartStickyComp.hide()
         }
+      },
+      selectFood(food) {
+        this.selectedFood = food
+        this._showFood()
+        this._showShopCartSticky()
+      },
+      onAdd(target) {
+        this.$refs.shopCart.drop(target)
+      },
+      _showFood() {
+        this.foodComp = this.foodComp || this.$createFood({
+          $props: {
+            food: 'selectedFood'
+          },
+          $events: {
+            add: (target) => {
+              this.shopCartStickyComp.drop(target)
+            },
+            leave: () => {
+              this._hideShopCartSticky()
+            }
+          }
+        })
+        this.foodComp.show()
+      },
+      _showShopCartSticky() {
+        this.shopCartStickyComp = this.shopCartStickyComp || this.$createShopCartSticky({
+          $props: {
+            selectFoods: 'selectFoods',
+            deliveryPrice: this.seller.deliveryPrice,
+            minPrice: this.seller.minPrice,
+            fold: true
+          }
+        })
+        this.shopCartStickyComp.show()
+      },
+      _hideShopCartSticky() {
+        this.shopCartStickyComp.hide()
+      }
     },
     components: {
-        SupportIco,
-        ShopCart,
-        CartControl,
-        Bubble
+      Bubble,
+      SupportIco,
+      CartControl,
+      ShopCart,
+      Food
     }
-}
+  }
 </script>
 
 <style lang="stylus" scoped>
@@ -214,7 +210,7 @@ export default {
     >>> .cube-scroll-nav-bar
       width: 80px
       white-space: normal
-      overflow: hidden  
+      overflow: hidden
     >>> .cube-scroll-nav-bar-item
       padding: 0 10px
       display: flex
@@ -229,7 +225,11 @@ export default {
       .num
         position: absolute
         right: -8px
-        top: -10px 
+        top: -10px
+      .support-ico
+        display: inline-block
+        vertical-align: top
+        margin-right: 4px
     >>> .cube-scroll-nav-bar-item_active
       background: $color-white
       color: $color-dark-grey

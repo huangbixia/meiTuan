@@ -1,11 +1,11 @@
 <template>
-    <div class="split"></div>
+  <div class="split"></div>
 </template>
 
 <script>
-export default {
+  export default {
     name: 'split'
-}
+  }
 </script>
 
 <style lang="stylus" scoped>

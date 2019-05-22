@@ -1,50 +1,46 @@
 <template>
-    <div class="star" :class="starType">
-        <span v-for="(itemClass, index) in itemClasses" :class="itemClass" class="star-item" :key="index"></span>
-    </div>
+  <div class="star" :class="starType">
+    <span v-for="(itemClass,index) in itemClasses" :class="itemClass" class="star-item" :key="index"></span>
+  </div>
 </template>
 
 <script>
-const LENGTH = 5
-const CLS_ON = 'on'
-const CLS_HALF = 'half'
-const CLS_OFF = 'off'
+  const LENGTH = 5
+  const CLS_ON = 'on'
+  const CLS_HALF = 'half'
+  const CLS_OFF = 'off'
 
-export default {
+  export default {
     props: {
-        size: {
-          type: Number
-        },
-        score: {
-            type: Number
-        }
+      size: {
+        type: Number
+      },
+      score: {
+        type: Number
+      }
     },
     computed: {
-        starType () {
-            return 'star-' + this.size
-        },
-        itemClasses () {
-            let result = []
-            const score = Math.floor(this.score * 2) / 2
-            const hasDecimal = score % 1 !== 0  // 检查是否有小数
-            const integer = Math.floor(score)   // 获取整数
-            
-            for (let i = 0; i < integer; i++) {
-                // 算出有多少颗整星
-                result.push(CLS_ON)
-            }
-            if (hasDecimal) {
-                // 无论小数是多少，都算半星
-                result.push(CLS_HALF)
-            }
-            while (result.length < LENGTH) {
-                // 默认为5颗星，如果leng小于5，则存在灰色星
-                result.push(CLS_OFF)
-            }
-            return result
+      starType() {
+        return 'star-' + this.size
+      },
+      itemClasses() {
+        let result = []
+        const score = Math.floor(this.score * 2) / 2
+        const hasDecimal = score % 1 !== 0
+        const integer = Math.floor(score)
+        for (let i = 0; i < integer; i++) {
+          result.push(CLS_ON)
         }
+        if (hasDecimal) {
+          result.push(CLS_HALF)
+        }
+        while (result.length < LENGTH) {
+          result.push(CLS_OFF)
+        }
+        return result
+      }
     }
-}
+  }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
@@ -98,5 +94,4 @@ export default {
           bg-image('star24_half')
         &.off
           bg-image('star24_off')
-
 </style>

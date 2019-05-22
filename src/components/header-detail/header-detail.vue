@@ -1,6 +1,6 @@
 <template>
-  <transition>
-    <div v-show="visible" class="header-detail">
+  <transition name="fade">
+    <div v-show="visible" class="header-detail" @touchmove.stop.prevent>
       <div class="detail-wrapper clear-fix">
         <div class="detail-main">
           <h1 class="name">{{seller.name}}</h1>
@@ -13,8 +13,8 @@
             <div class="line"></div>
           </div>
           <ul v-if="seller.supports" class="supports">
-            <li class="support-item" v-for="(item, index) in seller.supports" :key="item.id">
-              <support-ico :size="2" :type="seller.supports[index].type"></support-ico>
+            <li class="support-item" v-for="(item,index) in seller.supports" :key="item.id">
+              <support-ico :size=2 :type="seller.supports[index].type"></support-ico>
               <span class="text">{{seller.supports[index].description}}</span>
             </li>
           </ul>
@@ -24,38 +24,38 @@
             <div class="line"></div>
           </div>
           <div class="bulletin">
-              <p class="content">{{seller.bulletin}}</p>
+            <p class="content">{{seller.bulletin}}</p>
           </div>
         </div>
       </div>
       <div class="detail-close" @click="hide">
-          <i class="icon-close"></i>
+        <i class="icon-close"></i>
       </div>
     </div>
   </transition>
 </template>
 
 <script>
-import popupMixin from 'common/mixins/popup'
-import Star from 'components/star/star'
-import SupportIco from 'components/support-ico/support-ico'
+  import popupMixin from 'common/mixins/popup'
+  import Star from 'components/star/star'
+  import SupportIco from 'components/support-ico/support-ico'
 
-export default {
+  export default {
     name: 'header-detail',
     mixins: [popupMixin],
     props: {
-        seller: {
-          type: Object,
-          default () {
-            return {}
-          }
+      seller: {
+        type: Object,
+        default() {
+          return {}
         }
+      }
     },
     components: {
       SupportIco,
       Star
     }
-}
+  }
 </script>
 
 <style lang="stylus" scoped>
@@ -85,7 +85,7 @@ export default {
       min-height: 100%
       .detail-main
         margin-top: 64px
-        padding-bottom 64px
+        padding-bottom: 64px
         .name
           line-height: 16px
           text-align: center
@@ -113,7 +113,7 @@ export default {
           width: 80%
           margin: 0 auto
           .support-item
-            display: flex 
+            display: flex
             align-items: center
             padding: 0 12px
             margin-bottom: 12px
@@ -126,15 +126,16 @@ export default {
               font-size: $fontsize-small
         .bulletin
           width: 80%
-          margin: 0 auto 
+          margin: 0 auto
           .content
             padding: 0 12px
             line-height: 24px
             font-size: $fontsize-small
     .detail-close
-      position: relative 
+      position: relative
       width: 30px
       height: 30px
       margin: -64px auto 0 auto
-      clear: both   
+      clear: both
+      font-size: $fontsize-large-xxxx
 </style>

@@ -1,19 +1,20 @@
 <template>
-    <span class="bubble">
-        {{ num }}
-    </span>
+  <span class="bubble">
+    {{ num }}
+  </span>
 </template>
 
 <script>
-export default {
+  export default {
     name: 'bubble',
     props: {
-        num: {
-            type: Number
-        }
+      num: {
+        type: Number
+      }
     }
-}
+  }
 </script>
+
 <style lang="stylus" scoped>
   @import "~common/stylus/variable"
 
@@ -30,4 +31,3 @@ export default {
     color: $color-white
     background: linear-gradient(to right, $color-orange, $color-red)
 </style>
-
